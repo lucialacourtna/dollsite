@@ -10,9 +10,11 @@ main {
   padding-top: 20px;
   text-align: center;
   background-color: #ffeef6 ;
-
 }
 
+.log main{
+    padding-bottom: 25%;
+}
 
 header {
   display: flex;
