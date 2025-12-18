@@ -44,6 +44,8 @@ $brand = $_GET['brand'] ?? '';
 $year = $_GET['year'] ?? '';
 $location = $_GET['location'] ?? '';
 $sort = $_GET['sort'] ?? 'Brand';
+$search = trim($_GET['search'] ?? '');
+
 
 /* -------------------------
    Allowed sort columns
@@ -84,6 +86,30 @@ if ($location !== '') {
     $params[] = $location;
     $types .= "s";
 }
+if ($search !== '') {
+    $sql .= " AND (
+        Line LIKE ?
+        OR DollName LIKE ?
+        OR Brand LIKE ?
+        OR PurchaseLocation LIKE ?
+        OR CAST(ReleaseYear AS CHAR) LIKE ?
+        OR CAST(PurchasePrice AS CHAR) LIKE ?
+        OR CAST(PurchaseDate AS CHAR) LIKE ?
+    )";
+
+    $searchTerm = "%$search%";
+    $params = array_merge($params, [
+        $searchTerm,
+        $searchTerm,
+        $searchTerm,
+        $searchTerm,
+        $searchTerm,
+        $searchTerm,
+        $searchTerm
+    ]);
+    $types .= "sssssss";
+}
+
 
 $sql .= " ORDER BY $sort";
 
@@ -120,6 +146,30 @@ if ($location !== '') {
     $sumParams[] = $location;
     $sumTypes .= "s";
 }
+if ($search !== '') {
+    $sumSql .= " AND (
+        Line LIKE ?
+        OR DollName LIKE ?
+        OR Brand LIKE ?
+        OR PurchaseLocation LIKE ?
+        OR CAST(ReleaseYear AS CHAR) LIKE ?
+        OR CAST(PurchasePrice AS CHAR) LIKE ?
+        OR CAST(PurchaseDate AS CHAR) LIKE ?
+    )";
+
+    $searchTerm = "%$search%";
+    $sumParams = array_merge($sumParams, [
+        $searchTerm,
+        $searchTerm,
+        $searchTerm,
+        $searchTerm,
+        $searchTerm,
+        $searchTerm,
+        $searchTerm
+    ]);
+    $sumTypes .= "sssssss";
+}
+
 
 $sumStmt = $con->prepare($sumSql);
 if (!empty($sumParams)) {
@@ -131,6 +181,14 @@ $total = $sumStmt->get_result()->fetch_assoc()['total'] ?? 0;
 
 
 <form method="GET" class="filters">
+<strong>Search:</strong>
+<input
+    type="text"
+    name="search"
+    value="<?= htmlspecialchars($search) ?>"
+    placeholder="Search all fields...">
+    <br>    <br>
+
 
     <strong>Brand:</strong>
     <select name="brand">
@@ -178,7 +236,7 @@ $total = $sumStmt->get_result()->fetch_assoc()['total'] ?? 0;
 <strong>Total Purchase Price:</strong>$<?= number_format($total, 2) ?>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
 <strong>Dolls Returned:</strong> <?= $rowCount ?>
-
+<br><br>
 <table>
 <tr>
     <th>Line</th>
