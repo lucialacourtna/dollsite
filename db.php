@@ -233,9 +233,9 @@ $total = $sumStmt->get_result()->fetch_assoc()['total'] ?? 0;
 
 </form>
 
-<strong>Total Purchase Price:</strong>$<?= number_format($total, 2) ?>
+<strong>Total Value:</strong>$<?= number_format($total, 2) ?>
 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-<strong>Dolls Returned:</strong> <?= $rowCount ?>
+<strong>Doll Count:</strong> <?= $rowCount ?>
 <br><br>
 <table>
 <tr>
